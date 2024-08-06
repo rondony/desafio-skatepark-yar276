@@ -1,0 +1,222 @@
+<main>
+    <section>
+        <h2>Vista CRUD Productos</h2>
+    </section>
+
+    <section>
+        <h3>Creación de productos.</h3>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4">
+                <form id="formAgregarProductos">
+
+                    {{!-- CAMPO NOMBRE --}}
+                    <div>
+                        <label for="nombre" class="form-label">Nombre:</label>
+                        <input type="text" name="nombre" class="form-control" required>
+                    </div>
+
+                    {{!-- CAMPO DESCRIPCION --}}
+                    <div>
+                        <label for="descripcion" class="form-label">Descripción:</label>
+                        <textarea name="descripcion" class="form-control" required></textarea>
+                    </div>
+
+                    {{!-- CAMPO PRECIO--}}
+                    <div>
+                        <label for="precio" class="form-label">Precio:</label>
+                        <input type="number" name="precio" class="form-control" min="1" required>
+                    </div>
+
+                    {{!-- CAMPO STOCK--}}
+                    <div>
+                        <label for="stock" class="form-label">Stock:</label>
+                        <input type="number" name="stock" class="form-control" min="0" required>
+                    </div>
+
+                    {{!-- CAMPO FOTO--}}
+                    <div>
+                        <label for="foto" class="form-label">Foto:</label>
+                        <input type="file" name="foto" class="form-control" required>
+                    </div>
+
+                    <div class="py-3">
+                        <input type="submit" class="btn btn-primary" value="agregar">
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+
+    </section>
+
+    <section class="py-3">
+        <h3>Listado de productos.</h3>
+
+        <section class="overflow-x-auto">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col">Foto</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {{#each productos}}
+                    <tr>
+                        <th scope="row">{{id}}</th>
+                        <td>
+                            <input type="text" value="{{nombre}}" id="nombre_{{id}}">
+                        </td>
+                        <td>
+                            <input type="text" value="{{descripcion}}" id="descripcion_{{id}}">
+                        </td>
+                        <td>
+                            <input type="number" value="{{precio}}" min="1" id="precio_{{id}}">
+                        </td>
+                        <td>
+                            <input type="number" value="{{stock}}" min="0" id="stock_{{id}}">
+                        </td>
+                        <td>
+                            <img src="/img/productos/{{foto}}" alt="{{foto}}">
+                        </td>
+                        <td>
+                            <button class="btn btn-danger" onclick="eliminarProducto({{id}})">Eliminar</button>
+                            <button class="btn btn-warning" onclick="actualizarProducto({{id}})">Actualizar</button>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </section>
+    </section>
+</main>
+
+<script>
+    const eliminarProducto = async (id) => {
+        try {
+
+            let confirmacion = confirm("Está seguro de eliminar el producto con id: " + id);
+
+            if (!confirmacion) {
+                return true;
+            }
+
+            const myHeaders = new Headers();
+            myHeaders.append("Authorization", `Bearer ${token}`);
+
+            let response = await fetch("/api/v1/productos/" + id, {
+                method: "DELETE",
+                headers: myHeaders
+            });
+
+            let data = await response.json();
+
+            alert(data.message);
+
+            if (response.status == 200) {
+                location.reload();
+            }
+
+        } catch (error) {
+            alert("Error al intentar eliminar el producto, intente más tarde.")
+        }
+    }
+
+
+    // LÓGICA PARA AGREGAR PRODUCTOS //
+
+    const formAgregarProductos = document.getElementById("formAgregarProductos");
+
+    formAgregarProductos.addEventListener("submit", async (event) => {
+        try {
+            event.preventDefault();
+
+            let formData = new FormData(formAgregarProductos);
+
+            const myHeaders = new Headers();
+            myHeaders.append("Authorization", `Bearer ${token}`);
+
+            let response = await fetch("/api/v1/productos", {
+                method: "POST",
+                body: formData,
+                headers: myHeaders
+            });
+
+            let data = await response.json();
+
+            alert(data.message);
+
+            if (response.status == 201) {
+                location.reload();
+            }
+
+
+        } catch (error) {
+            console.log(error);
+            alert("Error al intentar crear el producto, intente más tarde.");
+        }
+    });
+
+
+    // LÓGICA PARA ACTUALIZAR PRODUCTOS //
+
+    const actualizarProducto = async (id) => {
+        try {
+
+            let nombre = document.getElementById(`nombre_${id}`).value;
+            let descripcion = document.getElementById(`descripcion_${id}`).value;
+            let stock = document.getElementById(`stock_${id}`).value;
+            let precio = document.getElementById(`precio_${id}`).value;
+
+            if (!nombre || !descripcion || !stock || !precio) {
+                return alert("Debe ingresar todos los datos del producto con ID: " + id)
+            }
+
+            const formdata = new FormData();
+
+            formdata.append("id", id);
+            formdata.append("nombre", nombre);
+            formdata.append("descripcion", descripcion);
+            formdata.append("stock", stock);
+            formdata.append("precio", precio);
+
+            const myHeaders = new Headers();
+            myHeaders.append("Authorization", `Bearer ${token}`);
+
+            let response = await fetch("/api/v1/productos", {
+                method: "PUT",
+                body: formdata,
+                headers: myHeaders
+            });
+
+            let data = await response.json();
+
+            alert(data.message);
+
+            if (response.status == 201) {
+                location.reload();
+            }
+
+
+        } catch (error) {
+            console.log(error);
+            alert("Error al intentar actualizar el producto, vuelva a intentar.")
+        }
+    }
+</script>
+
+
+<style>
+    table img {
+        width: 80px;
+        aspect-ratio: 3/4;
+    }
+</style>

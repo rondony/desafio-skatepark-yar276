@@ -1,0 +1,27 @@
+<div class="card" style="width:90%;">
+    <img src="/img/productos/{{producto.foto}}" class="card-img-top" alt="{{producto.foto}}" />
+    <div class="card-body">
+        <h5 class="card-title">{{producto.nombre}}</h5>
+        <div class="card-descripcion">
+            <p class="card-text truncate">{{producto.descripcion}}</p>
+        </div>
+
+        <hr />
+        <p class="card-text">Precio: {{producto.precio}}</p>
+        <p class="card-text">Stock: {{producto.stock}}</p>
+        <a href="/producto/detalle/{{id}}" class="btn btn-primary">Ver más</a>
+    </div>
+</div>
+
+<style>
+    .card-descripcion {
+        height: 40px;
+    }
+
+    .truncate {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>

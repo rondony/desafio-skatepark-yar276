@@ -1,0 +1,60 @@
+<main class="container">
+    <section>
+        <h2 class="text-center py-3">Detalle de producto</h2>
+
+        <div class="row">
+            <div class="col">
+                <div class="card mb-3" style="width: 90%">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="/img/productos/{{producto.foto}}" class="img-fluid rounded-start"
+                                alt="{{producto.foto}}" />
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{producto.nombre}}</h5>
+                                <p class="card-text">{{producto.descripcion}}</p>
+
+                                <hr />
+                                <p class="card-text">Precio:
+                                    {{producto.precio}}</p>
+                                <p class="card-text">Stock:
+                                    {{producto.stock}}</p>
+
+                                <div>
+                                    <button class="btn btn-success" onclick="comprar()">Comprar</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+<script>
+
+    const comprar = async () => {
+        try {
+
+
+            const myHeaders = new Headers();
+            myHeaders.append("Authorization", `Bearer ${token}`);
+
+            let response = await fetch("/api/v1/compra", {
+                headers: myHeaders
+            })
+
+            let data = await response.json();
+
+            alert(data.message);
+
+        } catch (error) {
+            alert("Error en proceso de compra, vuelva a intentar más tarde.")
+        }
+    }
+
+</script>

@@ -1,0 +1,73 @@
+<main class="container">
+
+    {{#if error}}
+    <section>
+        <p>{{error}}</p>
+    </section>
+    {{else}}
+    <section class="productos">
+        <h2 class="text-center py-3">Listado de productos</h2>
+
+        <section class="filtros py-3">
+            <form action="/productos">
+
+                {{!-- INICIO NOMBRE --}}
+                <input type="text" placeholder="Nombre o Descripción" name="nombre">
+
+                {{!-- FIN NOMBRE --}}
+
+
+                {{!-- INICIO PRECIO MÍNIMO --}}
+                <input type="number" placeholder="Precio min" name="precioMin">
+
+                {{!-- FIN PRECIO MÍNIMO --}}
+
+                {{!-- INICIO PRECIO MÍNIMO --}}
+                <input type="number" placeholder="Precio max" name="precioMax">
+
+                {{!-- FIN PRECIO MÍNIMO --}}
+                {{!-- INICIO PRECIO MÍNIMO --}}
+                <select name="orderFilter">
+                    <option value="">Seleccione un filtro</option>
+                    <option value="precioMayorMenor">Precio Mayor a Menor</option>
+                    <option value="precioMenorMayor">Precio Menor a Mayor</option>
+                    <option value="stockAsc">Stock Asc</option>
+                    <option value="stockDesc">Stock Desc</option>
+
+                </select>
+
+                {{!-- FIN PRECIO MÍNIMO --}}
+
+                <div class="py-3">
+                    <input type="submit" value="Filtrar" class="btn btn-primary">
+                </div>
+            </form>
+        </section>
+
+        <div class="row g-3">
+
+            {{#if productos}}
+            {{#each productos}}
+
+            <div class="col-12 col-md-6 col-lg-4">
+                {{>CardProducto
+                producto = this
+                }}
+            </div>
+            {{/each}}
+
+            {{else}}
+            <h2>No hay productos para mostrar.</h2>
+            {{/if}}
+
+        </div>
+
+    </section>
+    {{/if}}
+</main>
+
+<style>
+    .productos img {
+        aspect-ratio: 224/225;
+    }
+</style>
